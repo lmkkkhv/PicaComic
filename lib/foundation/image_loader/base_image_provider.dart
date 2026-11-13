@@ -120,6 +120,9 @@ abstract class BaseImageProvider<T extends BaseImageProvider<T>>
 
   static final _cache = LinkedHashMap<String, Uint8List>();
 
+  static final _transparentPng = base64Decode(
+      'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==');
+
   static var _cacheSize = 0;
 
   static var _cacheSizeLimit = 50 * 1024 * 1024;
