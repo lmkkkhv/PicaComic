@@ -323,7 +323,7 @@ class HtmangaNetwork {
       return Res(null, errorMessage: res.errorMessage);
     }
     try {
-      var urls = RegExp(r"(?<=//)[\w./\[\]()-]+").allMatches(res.data);
+      var urls = RegExp(r"(?<=//)[\w./\[\]()\-?=]+").allMatches(res.data);
       var images = <String>[];
       for (var url in urls) {
         images.add("https://${url[0]!}");
