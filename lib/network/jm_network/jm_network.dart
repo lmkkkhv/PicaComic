@@ -145,6 +145,18 @@ class JmNetwork {
 
   Future<void> init() async {
     loginFromAppdata();
+    try {
+        var res = await getApiDomains();
+      var newDomains = res.dataOrNull;
+      if (!res.error && newDomains != null) {
+          var list = List<String>.from(newDomains as List);
+        if (list.isNotEmpty) {
+            appdata.appSettings.jmApiDomains = list;
+        }
+      }
+    } catch (_) {
+        // Keep the current domains if refreshing fails
+    }
   }
 
   Future<Res<dynamic>> getAppVersionCode() async {
