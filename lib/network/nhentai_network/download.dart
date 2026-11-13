@@ -73,6 +73,9 @@ class NhentaiDownloadingItem extends DownloadingItem {
   @override
   Future<Map<int, List<String>>> getLinks() async {
     var res = await NhentaiNetwork().getImages(comic.id);
+    if (res.error) {
+      throw Exception(res.errorMessage);
+    }
     return {0: res.data};
   }
 
