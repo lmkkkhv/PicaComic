@@ -65,10 +65,15 @@ class ComicSource {
   static Future<void> init() async {
     for (var source in builtInSources) {
       if (appdata.appSettings.isComicSourceEnabled(source)) {
-        var s = builtIn.firstWhere((e) => e.key == source);
-        sources.add(s);
-        await s.loadData();
-        s.initData?.call(s);
+        try {
+          var s = builtIn.firstWhere((e) => e.key == source);
+          sources.add(s);
+          await s.loadData();
+          s.initData?.call(s);
+        } catch (e, s) {
+          log("Failed to init accounts data $source: $e\n$s", "ComicSource",
+              LogLevel.error);
+        }
       }
     }
     final path = "${App.dataPath}/comic_source";
