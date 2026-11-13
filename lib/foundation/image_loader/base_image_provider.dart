@@ -79,7 +79,12 @@ abstract class BaseImageProvider<T extends BaseImageProvider<T>>
       }
 
       if(stop) {
-        throw Exception("Image loading is stopped");
+        // Loading was cancelled because the image is no longer needed
+        // (widget disposed or scrolled away). This is normal, not an error:
+        // return a 1x1 transparent image so the completer finishes cleanly
+        // instead of surfacing "Image loading is stopped" as an app error.
+        final buffer = await ImmutableBuffer.fromUint8List(_transparentPng);
+        return await decode(buffer);
       }
 
       if(data!.isEmpty) {
