@@ -166,7 +166,13 @@ class ComicSource {
   Future<void> loadData() async {
     var file = File("${App.dataPath}/comic_source/$key.data");
     if (await file.exists()) {
-      data = Map.from(jsonDecode(await file.readAsString()));
+      try {
+        data = Map.from(jsonDecode(await file.readAsString()));
+      } catch (e, s) {
+        // 数据文件为空或损坏时, 回退到空数据
+        log("Failed to load data of $key: $e\n$s", "ComicSource", LogLevel.error);
+        data = <String, dynamic>{};
+      }
     }
   }
 
