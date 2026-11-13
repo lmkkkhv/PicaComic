@@ -93,7 +93,7 @@ void nhLogin(void Function() onFinished) async{
             cookiesList.add(cookie);
           }
         });
-        await NhentaiNetwork().cookieJar!.saveFromResponse(
+        NhentaiNetwork().cookieJar!.saveFromResponse(
             Uri.parse(NhentaiNetwork().baseUrl), cookiesList);
         // Only mark finished once everything above has succeeded: the old
         // code set the flag before these steps, so any error left the
