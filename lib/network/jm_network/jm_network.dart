@@ -87,7 +87,17 @@ class JmNetwork {
 
   static List<String> get domains => appdata.appSettings.jmApiDomains;
 
-  String get baseUrl => "https://${domains[int.parse(appdata.settings[17])]}";
+  String get baseUrl {
+      if (domains.isEmpty) {
+          return "https://www.cdntwice.org";
+      }
+      var index = int.tryParse(appdata.settings[17]) ?? 0;
+    if (index < 0 || index >= domains.length) {
+      index = 0;
+    }
+      return "https://${domains[index]}";
+  }
+  
 
   static const domainUrls = [
     "https://rup4a04-c02.tos-cn-hongkong.bytepluses.com/newsvr-2025.txt",
