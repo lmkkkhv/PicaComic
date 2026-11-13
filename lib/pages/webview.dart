@@ -56,6 +56,8 @@ class AppWebview extends StatefulWidget {
 
   final void Function(InAppWebViewController controller)? onStarted;
 
+  final void Function(InAppWebViewController controller)? onLoadStop;
+
   final bool singlePage;
 
   @override
