@@ -262,35 +262,62 @@ class HtmangaNetwork {
     }
     try {
       var document = parse(res.data);
-      var name = document.querySelector("div.userwrap > h2")!.text;
-      var coverPath = document
+      var nameElement = document.querySelector("div.userwrap > h2");
+      if (nameElement == null) {
+        return Res(null,
+            errorMessage: "无法解析漫画详情页, 网站结构可能已更改");
+      }
+      var name = nameElement.text;
+      var coverSrc = document
           .querySelector(
-              "div.userwrap > div.asTB > div.asTBcell.uwthumb > img")!
-          .attributes["src"]!;
-      coverPath = "https:$coverPath";
-      coverPath = coverPath.replaceRange(6, 8, "");
+              "div.userwrap > div.asTB > div.asTBcell.uwthumb > img")
+          ?.attributes["src"];
+      var coverPath = coverSrc == null ? "" : "https:$coverSrc";
+      if (coverPath.length >= 8) {
+        coverPath = coverPath.replaceRange(6, 8, "");
+      }
       var labels = document.querySelectorAll("div.asTBcell.uwconn > label");
-      var category = labels[0].text.split("：")[1];
-      var pages = int.parse(
-          RegExp(r"\d+").firstMatch(labels[1].text.split("：")[1])![0]!);
+      var category = "";
+      if (labels.isNotEmpty) {
+        var parts = labels[0].text.split("：");
+        category = parts.length > 1 ? parts[1] : labels[0].text;
+      }
+      var pages = 0;
+      if (labels.length > 1) {
+        var parts = labels[1].text.split("：");
+        var pageText = parts.length > 1 ? parts[1] : labels[1].text;
+        pages =
+            int.tryParse(RegExp(r"\d+").firstMatch(pageText)?[0] ?? "") ?? 0;
+      }
       var tagsDom = document.querySelectorAll("a.tagshow");
       var tags = <String, String>{};
       for (var tag in tagsDom) {
-        var link = tag.attributes["href"]!;
-        tags[tag.text] = link;
+        var link = tag.attributes["href"];
+        if (link != null) {
+          tags[tag.text] = link;
+        }
       }
-      var description = document.querySelector("div.asTBcell.uwconn > p")!.text;
+      var description =
+          document.querySelector("div.asTBcell.uwconn > p")?.text ?? "";
       var uploader =
-          document.querySelector("div.asTBcell.uwuinfo > a > p")!.text;
-      var avatar = document
-          .querySelector("div.asTBcell.uwuinfo > a > img")!
-          .attributes["src"]!;
-      avatar = "$baseUrl/$avatar";
-      var uploadNum = int.parse(
-          document.querySelector("div.asTBcell.uwuinfo > p > font")!.text);
+          document.querySelector("div.asTBcell.uwuinfo > a > p")?.text ?? "";
+      var avatarSrc = document
+          .querySelector("div.asTBcell.uwuinfo > a > img")
+          ?.attributes["src"];
+      var avatar = avatarSrc == null ? "" : "$baseUrl/$avatarSrc";
+      var uploadNum = int.tryParse(document
+                  .querySelector("div.asTBcell.uwuinfo > p > font")
+                  ?.text ??
+              "") ??
+          0;
       var photosDom = document.querySelectorAll("div.pic_box.tb > a > img");
-      var photos = List<String>.generate(photosDom.length,
-          (index) => "https:${photosDom[index].attributes["src"]!}");
+      var photos = <String>[];
+      for (var photo in photosDom) {
+        var src = photo.attributes["src"];
+        if (src != null) {
+          photos.add("https:$src");
+        }
+      }
       return Res(
           HtComicInfo(id, coverPath, name, category, pages, tags, description,
               uploader, avatar, uploadNum, photos));
