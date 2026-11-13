@@ -1,5 +1,6 @@
 import 'dart:io' as io;
 
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:pica_comic/base.dart';
 import 'package:pica_comic/components/components.dart';
 import 'package:pica_comic/foundation/app.dart';
