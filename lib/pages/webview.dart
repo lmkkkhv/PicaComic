@@ -127,6 +127,9 @@ class _AppWebviewState extends State<AppWebview> {
         controller = c;
         widget.onStarted?.call(c);
       },
+      onLoadStop: (c, url){
+        widget.onLoadStop?.call(c);
+      },
       onProgressChanged: (c, p){
         if(mounted){
           setState(() {
